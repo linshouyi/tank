@@ -1,9 +1,18 @@
 package com.jesu;
 
+/**
+ * 生命（有生命的）
+ * 
+ * @author linshouyi
+ *
+ */
 public interface Life {
 
-	public void action();
-
+	/**
+	 * 是否还活着
+	 * 
+	 * @return
+	 */
 	public boolean isLive();
 
 }

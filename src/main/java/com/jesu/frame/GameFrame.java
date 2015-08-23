@@ -1,17 +1,20 @@
-package com.jesu;
+package com.jesu.frame;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.WindowAdapter;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.jesu.adapter.GameKeyAdapter;
 import com.jesu.adapter.GameMouseAdapter;
 import com.jesu.adapter.GameWindowAdapter;
-import com.jesu.tank.AkTank;
+import com.jesu.life.block.Block;
+import com.jesu.life.tank.AkTank;
 
 /**
  * 游戏窗口框架
@@ -22,17 +25,20 @@ import com.jesu.tank.AkTank;
 public class GameFrame extends Frame {
 
 	private static final long serialVersionUID = -9147978160031998181L;
+	private String title = "坦克大战";
+	private String version = "0.01";
 	private Resource resource;
 	private Timer timer;
-
 	private GameMouseAdapter mouseController;
 
 	public GameFrame() {
 		this.addWindowAdapter(new GameWindowAdapter());
-		this.addKeyListener();
+		this.addKeyAdapter(new GameKeyAdapter());
+		addMouseAdapter(mouseController = new GameMouseAdapter());
 		this.setBounds(100, 100, 500, 400);
 		// this.setResizable(false);
-		this.setTitle("坦克大战v0.01");
+		this.setTitle(title + version);
+		this.setBackground(Color.WHITE);
 
 		init();
 		this.setVisible(true);
@@ -40,11 +46,10 @@ public class GameFrame extends Frame {
 
 	public void init() {
 		resource = Resource.getResource();
-		addMouseAdapter(mouseController = new GameMouseAdapter(resource));
 		for (int i = 0; i < 10; i++) {
-			AkTank tank = new AkTank(50, (i + 1) * 30, 20, 20);
-			resource.addTank(tank);
+			resource.addTank(new AkTank(50, (i + 1) * 30, 20, 20));
 		}
+		resource.addBlock(new Block(100, 150, 30, 80));
 		timer = new Timer();
 		timer.schedule(new PaintTimerTask(), 0, 50);
 	}
@@ -59,31 +64,13 @@ public class GameFrame extends Frame {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		for (Painter painter : resource.getPainters()) {
-			painter.paint(g);
-		}
+		resource.paint(g);
 		if (mouseController != null) {
-			mouseController.paint(g);
+			mouseController.paint((Graphics2D) g.create());
 		}
 	}
 
-	public void addKeyListener() {
-		KeyAdapter adapter = new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				System.out.println("keyPressed:" + e);
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				System.out.println("keyReleased:" + e);
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				System.out.println("keyTyped:" + e);
-			}
-		};
+	public void addKeyAdapter(KeyAdapter adapter) {
 		this.addKeyListener(adapter);
 	}
 

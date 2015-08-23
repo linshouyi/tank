@@ -1,4 +1,4 @@
-package com.jesu;
+package com.jesu.frame;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -13,7 +13,7 @@ import java.awt.Rectangle;
  * @author linshouyi
  *
  */
-public class Selector implements Life, Painter {
+public class Selector {
 
 	private Point startPoint;
 	private Point endPoint;
@@ -30,7 +30,6 @@ public class Selector implements Life, Painter {
 		this(startPoint, startPoint);
 	}
 
-	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g.create();
 		g2d.setColor(Color.RED);
@@ -38,7 +37,6 @@ public class Selector implements Life, Painter {
 		g2d.draw(getRectangle());
 	}
 
-	@Override
 	public void action() {
 		int startX = (endPoint.x - startPoint.x) / 4;
 		int startY = (endPoint.y - startPoint.y) / 4;
@@ -62,12 +60,10 @@ public class Selector implements Life, Painter {
 		this.endPoint = endPoint;
 	}
 
-	@Override
 	public boolean isLive() {
 		return this.live;
 	}
 
-	@Override
 	public Rectangle getRectangle() {
 		int x = Math.min(startPoint.x, endPoint.x);
 		int y = Math.min(startPoint.y, endPoint.y);

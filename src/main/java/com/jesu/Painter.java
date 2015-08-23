@@ -1,12 +1,20 @@
 package com.jesu;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.Graphics2D;
 
-public interface Painter {
+/**
+ * 绘制器（可绘制的）
+ * 
+ * @author linshouyi
+ *
+ */
+public interface Painter extends Life {
 
-	public void paint(Graphics g);
-
-	public Rectangle getRectangle();
+	/**
+	 * 绘制
+	 * 
+	 * @param g
+	 */
+	public void paint(Graphics2D g);
 
 }

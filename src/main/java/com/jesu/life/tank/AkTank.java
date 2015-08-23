@@ -1,17 +1,15 @@
-package com.jesu.tank;
+package com.jesu.life.tank;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.jesu.Life;
-import com.jesu.Painter;
-import com.jesu.Resource;
+import com.jesu.Controller;
 import com.jesu.adapter.AkTankAdapter;
+import com.jesu.frame.Resource;
 
 /**
  * Ak坦克
@@ -19,7 +17,7 @@ import com.jesu.adapter.AkTankAdapter;
  * @author linshouyi
  *
  */
-public class AkTank implements Life, Painter {
+public class AkTank implements Controller {
 
 	private boolean live;
 	private Rectangle rectangle;
@@ -68,18 +66,16 @@ public class AkTank implements Life, Painter {
 	}
 
 	@Override
-	public void paint(Graphics g) {
+	public void paint(Graphics2D g) {
 		this.action();
-		Graphics2D g2d = (Graphics2D) g.create();
-		g2d.setColor(color);
-		g2d.fill(rectangle);
+		g.setColor(color);
+		g.fill(rectangle);
 	}
 
 	public void setTarget(Point target) {
 		this.target = target;
 	}
 
-	@Override
 	public void action() {
 		Point nextLocation = plan();
 		boolean allow = false;

@@ -3,7 +3,7 @@ package com.jesu.adapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import com.jesu.tank.AkTank;
+import com.jesu.life.tank.AkTank;
 
 /**
  * Ak坦克适配器

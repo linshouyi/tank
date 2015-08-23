@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.geom.Area;
 
-import com.jesu.GameFrame;
+import com.jesu.frame.GameFrame;
 
 public class GameFrameTest extends GameFrame {
 

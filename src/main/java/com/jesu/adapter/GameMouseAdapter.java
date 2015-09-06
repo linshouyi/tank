@@ -1,17 +1,9 @@
 package com.jesu.adapter;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.jesu.Controller;
-import com.jesu.frame.Coord;
-import com.jesu.frame.Resource;
-import com.jesu.frame.Selector;
+import com.jesu.frame.GameResource;
 
 /**
  * 游戏鼠标适配器
@@ -21,116 +13,70 @@ import com.jesu.frame.Selector;
  */
 public class GameMouseAdapter extends MouseAdapter {
 
-	private Coord coord;// 当前指针坐标
-	private Selector selector;// 当前选择器
-	private List<Selector> selectors = new ArrayList<Selector>();// 已释放选择器
-	private List<Controller> controllers = new ArrayList<Controller>();// 选中的坦克
-
 	public GameMouseAdapter() {
-		coord = new Coord();
 	}
 
-	public void paint(Graphics2D g) {
-		// 右上角坐标显示
-		this.coord.paint(g);
-		// 选择器
-		Selector selector = this.selector;
-		if (selector != null) {
-			selector.paint(g);
-		}
-		// 释放选择器
-		for (int i = 0; i < selectors.size(); i++) {
-			Selector pickBox = selectors.get(i);
-			pickBox.action();
-			if (pickBox.isLive()) {
-				pickBox.paint(g);
-			} else {
-				selectors.remove(i);
-				i--;
-			}
-		}
-		// 选中标志
-		for (Controller controller : controllers) {
-			g.setColor(Color.RED);
-			g.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL, 0, new float[] { 3, 3 }, 0));
-			g.draw(controller.getRectangle());
-		}
-	}
-
-	private void clearControllers() {
-		System.out.println("清空：" + controllers);
-		controllers.clear();
-	}
-
+	/**
+	 * 鼠标操作，不考虑线程安全问题
+	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println("mouseClicked");
-		for (Controller controller : controllers) {
-			controller.getAdapter().mouseClicked(e);
+//		System.out.println("mouseClicked");
+		for (MouseAdapter adapter : GameResource.getMouseAdapters()) {
+			adapter.mouseClicked(e);
 		}
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		System.out.println("mousePressed");
+//		System.out.println("mousePressed");
 		if (e.getButton() == 1) {
-			this.selector = new Selector(e.getPoint());
+			GameResource.createSelector(e.getX(), e.getY());// 创建选择器
 		}
-		for (Controller controller : controllers) {
-			controller.getAdapter().mousePressed(e);
+		for (MouseAdapter adapter : GameResource.getMouseAdapters()) {
+			adapter.mousePressed(e);
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		System.out.println("mouseReleased");
+//		System.out.println("mouseReleased");
 		if (e.getButton() == 1) {
-			Selector selector = this.selector;
-			this.selector = null;
-			if (selector == null) {
-				return;
-			}
-			selectors.add(selector);// 释放选择器
-			clearControllers();
-			this.controllers.addAll(Resource.getResource().control(selector.getRectangle()));
+			GameResource.finishSelector();
 		}
-		for (Controller controller : controllers) {
-			controller.getAdapter().mouseReleased(e);
+		for (MouseAdapter adapter : GameResource.getMouseAdapters()) {
+			adapter.mouseReleased(e);
 		}
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		for (Controller controller : controllers) {
-			controller.getAdapter().mouseEntered(e);
-		}
+		// for (MouseAdapter adapter : resource.getMouseAdapters()) {
+		// adapter.mouseEntered(e);
+		// }
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		for (Controller controller : controllers) {
-			controller.getAdapter().mouseExited(e);
-		}
+		// for (MouseAdapter adapter : resource.getMouseAdapters()) {
+		// adapter.mouseExited(e);
+		// }
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		coord.setPoint(e.getPoint());
-		for (Controller controller : controllers) {
-			controller.getAdapter().mouseMoved(e);
+		for (MouseAdapter adapter : GameResource.getMouseAdapters()) {
+			adapter.mouseMoved(e);
 		}
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if (e.getButton() == 1) {
-			Selector selector = this.selector;
-			if (selector != null) {
-				selector.setEndPoint(e.getPoint());
-			}
+			GameResource.resizeSelector(e.getX(), e.getY());
 		}
-		for (Controller controller : controllers) {
-			controller.getAdapter().mouseDragged(e);
+		for (MouseAdapter adapter : GameResource.getMouseAdapters()) {
+			adapter.mouseDragged(e);
 		}
 	}
 
